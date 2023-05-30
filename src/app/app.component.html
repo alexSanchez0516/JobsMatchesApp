@@ -1,1 +1,21 @@
-<h1>En la web</h1>
+<header class="d-flex justify-content-center p-4">
+  <nav class="d-flex">
+    <img src="../assets/img/infojobs-fill.svg" alt="logotipo" width="100px">
+    <ul class="d-flex justity-content-center list-unstyled mx-5">
+      <li *ngFor="let route of routes"
+       class="mx-3" [routerLink]="route.url"> {{route.text}} </li>
+    </ul>
+
+    <i (click)="changeThemeColor()" class="fa-solid fa-moon fs-3"></i>
+
+  </nav>
+</header>
+<hr>
+
+<section class="d-flex justify-content-center">
+  <router-outlet></router-outlet>
+</section>
+
+<footer>
+
+</footer>

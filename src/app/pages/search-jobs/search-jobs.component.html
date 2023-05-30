@@ -1,0 +1,295 @@
+<div class="container">
+  <div class="row">
+    <div class="col-12">
+      <form
+      [formGroup]="formControl"
+      (ngSubmit)="search()"
+       class="w-100">
+        <div class="d-flex flex-column">
+          <label for="inputPassword" class="col-form-label"
+            >Busco ofertas de...</label
+          >
+          <div class="row">
+            <input type="text" formControlName="keyword" class="form-control" id="inputPassword" />
+
+            <label for="inputPassword" class="col-form-label">En...</label>
+            <select class="form-select" formControlName="province" aria-label="Default select example">
+              <option selected>España</option>
+              <option *ngFor="let province of provincesResponse.data" [value]="province.value">
+                {{ province.value }}
+              </option>
+            </select>
+
+            <label for="inputPassword" class="col-form-label"
+              >Categoría...</label
+            >
+            <select class="form-select" formControlName="category" aria-label="Default select example">
+              <option *ngFor="let category of categorysResp.data" value="1">
+                {{ category.value }}
+              </option>
+            </select>
+          </div>
+          <button
+            class="btn btn-primary w-50 align-self-center m-2"
+          >
+            Buscar
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="row" *ngIf="this.offertsResponse.items.length > 0">
+    <h3>Cantidad: <span class="badge bg-primary">{{this.offertsResponse.items.length*this.offertsResponse.totalPages}}</span></h3>
+  </div>
+
+  <div class="row mt-4 mb-2">
+    <div class="col-md-3 col-6">
+      <select (change)="filterBySalary($event)" class="form-select" aria-label="Default select example">
+        <option [value]="salary.id" *ngFor="let salary of this.salaryInfoJobsKeyValueData.data">{{salary.value}}</option>
+      </select>
+    </div>
+    <div class="col-md-3 col-6">
+      <select (change)="filterByXP($event)" class="form-select" aria-label="Default select example">
+        <option [value]="xp.id" *ngFor="let xp of this.experienceInfoJobsKeyValueData.data">{{xp.value}}</option>
+      </select>
+    </div>
+    <div class="col-md-3 col-6">
+      <select (change)="filterByModalidad($event)" class="form-select" aria-label="Default select example">
+        <option [value]="modality.id" *ngFor="let modality of this.teleworkingInfoJobsKeyValueData.data">{{modality.value}}</option>
+      </select>
+    </div>
+
+    <div class="col-md-3 col-6">
+      <select (change)="filterByTipoJornada($event)" class="form-select" aria-label="Default select example">
+        <option [value]="typeJornada.id" *ngFor="let typeJornada of this.typeJornadaInfoJobsKeyValueData.data">{{typeJornada.value}}</option>
+      </select>
+    </div>
+    <div class="col-md-12 justify-content-center">
+      <button (click)="this.clearFilters()" class="btn btn-primary my-2">Limpiar filtros</button>
+      <button (click)="this.filterResults()" class="btn btn-primary my-2" style="float: inline-end;">Filtrar</button>
+    </div>
+  </div>
+
+  <div class="row mb-2">
+    <div class="col-md-6 col-12">
+      <div class="w-100 d-flex flex-column">
+        <div
+          *ngFor="let offer of offertsResponse.items"
+          (click)="searchJob(offer.id)"
+          class="mt-2 p-2 bg-primary border rounded"
+        >
+          <div class="row">
+            <div class="col-4">
+              <ng-container
+                *ngIf="offer.author!.logoUrl != null; else photoTemplateAuthor"
+              >
+                <img [src]="offer.author!.logoUrl" alt="" class="img-fluid" />
+              </ng-container>
+              <ng-template #photoTemplateAuthor>
+                <img
+                  src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSb3omQnCUvNFhGB7Mao5ECugglOd3y12Rw9lAehHrC&s"
+                  alt=""
+                />
+              </ng-template>
+            </div>
+            <div class="col-8">
+              <h5 class="text-light">
+                {{ offer.title }} -
+                {{ offer.published | date : "M/d/yy h:mm a" }}
+              </h5>
+              <a
+                target="_blank"
+                class="text-decoration-none text-dark"
+                [href]="offer.author!.uri"
+                >Empresa: {{ offer.author!.name }}</a
+              >
+              <div>
+                <span class="d-flex flex-column"
+                  >Provincia: {{ offer.province!.value }}</span
+                >
+                <span>Ciudad: {{ offer.city }}</span>
+              </div>
+
+              <div class="d-flex flex-column">
+                <span
+                  >Experiencia Mínima: {{ offer.experienceMin!.value }}</span
+                >
+                <span>Modalidad: {{ offer.teleworking?.value }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <nav aria-label="Page navigation example mt-4">
+        <ul class="pagination mt-3">
+
+          <li class="page-item" *ngIf="this.followPage > 1">
+            <a class="page-link" (click)="calcFollowPage(this.followPage-1)">Anterior</a>
+          </li>
+          <li class="page-item"  *ngIf="this.followPage > 1">
+            <a class="page-link" (click)="calcFollowPage(1)">1</a>
+          </li>
+
+          <li
+          class="page-item"
+          *ngFor="let page of this.pages; let i=index"
+          [class.active]="page == this.followPage"
+          >
+            <a class="page-link" (click)="calcFollowPage(page)">{{page}}</a>
+          </li>
+          <li class="page-item"><a class="page-link" (click)="calcFollowPage(this.offertsResponse.totalPages)"
+             >{{this.offertsResponse.totalPages}}</a></li>
+          <li *ngIf="this.followPage < this.offertsResponse.totalPages" class="page-item">
+            <a class="page-link" (click)="calcFollowPage(this.followPage+1)">Siguiente</a>
+          </li>
+
+        </ul>
+      </nav>
+    </div>
+
+    <ng-container *ngIf="this.offert.id != ''; else templateOffertSelected">
+      <div class="col-md-6 col-12 order-1 border rounded p-2">
+        <div class="row">
+          <div class="col-12">
+            <h3>{{ offert.title }}</h3>
+            <strong
+              >{{ offert.author!.name }}. {{ offert.city }},
+              {{ offert.province!.value }},
+              <span class="text-success">{{
+                offert.published | date : "M/d/yy h:mm a"
+              }}</span></strong
+            >
+          </div>
+          <div class="col-12 m-2">
+            <div class="row">
+              <div class="col-10">
+                <span class="mx-2"
+                  ><i class="fa-solid fa-briefcase mx-2"></i
+                  >{{ offert.contractType?.value }}</span
+                >
+                <span
+                  ><i class="fa-sharp fa-regular fa-building mx-2"></i
+                  >{{ offert.teleworking?.value }}</span
+                >
+              </div>
+              <div class="col-12">
+                <span class="mx-2">
+                  Categoría: {{ offert.category?.value }}</span
+                >
+              </div>
+
+              <div class="col-12">
+                <h3>Requisitos Mínimos:</h3>
+                <ng-container
+                  *ngIf="offert.requirementMin != ''; else elseTemplateStudymin1"
+                >
+                  <p>{{ offert.requirementMin }}</p>
+                </ng-container>
+                <ng-template #elseTemplateStudymin1>
+                  <p>No hay datos</p>
+                </ng-template>
+              </div>
+
+              <div class="col-12">
+                <h3>Estudios:</h3>
+                <p>{{ offert.study?.value }}</p>
+              </div>
+
+              <div class="col-12">
+                <h3>Salario:</h3>
+                <ng-container
+                  *ngIf="
+                    offert.salaryMin?.value != '' &&
+                      offert.salaryMax?.value != '';
+                    else elseTemplateSalary1
+                  "
+                >
+                  <p>
+                    Rango salarial: {{ offert.salaryMin?.value }} -
+                    {{ offert.salaryMax?.value }}
+                  </p>
+                </ng-container>
+                <ng-template #elseTemplateSalary1>
+                  <p>No indica salario</p>
+                </ng-template>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+    <ng-template  #templateOffertSelected>
+      <div class="col-md-6 col-12 border rounded p-2">
+        <div class="row">
+          <div class="col-12">
+            <h3>{{ offertFirt.title }}</h3>
+            <strong
+              >{{ offertFirt.author?.name }}. {{ offertFirt.city }},
+              {{ offertFirt.province?.value }},
+              <span class="text-success">{{
+                offertFirt.published | date : "M/d/yy h:mm a"
+              }}</span></strong
+            >
+          </div>
+          <div class="col-12 m-2">
+            <div class="row">
+              <div class="col-10">
+                <span class="mx-2"
+                  ><i class="fa-solid fa-briefcase mx-2"></i
+                  >{{ offertFirt.contractType?.value }}</span
+                >
+                <span
+                  ><i class="fa-sharp fa-regular fa-building mx-2"></i
+                  >{{ offertFirt.teleworking?.value }}</span
+                >
+              </div>
+              <div class="col-12">
+                <span class="mx-2">
+                  Categoría: {{ offertFirt.category?.value }}</span
+                >
+              </div>
+
+              <div class="col-12">
+                <h3>Requisitos Mínimos:</h3>
+                <ng-container
+                  *ngIf="offertFirt.requirementMin != ''; else elseTemplateStyMIn"
+                >
+                  <p>{{ offertFirt.requirementMin }}</p>
+                </ng-container>
+                <ng-template #elseTemplateStyMIn>
+                  <p>No hay datos</p>
+                </ng-template>
+              </div>
+
+              <div class="col-12">
+                <h3>Estudios:</h3>
+                <p>{{ offertFirt.study?.value }}</p>
+              </div>
+
+              <div class="col-12">
+                <h3>Salario:</h3>
+                <ng-container
+                  *ngIf="
+                  offertFirt.salaryMin?.value != '' &&
+                  offertFirt.salaryMax?.value != '';
+                    else elseTemplateSalary
+                  "
+                >
+                  <p>
+                    Rango salarial: {{ offertFirt.salaryMin?.value }} -
+                    {{ offertFirt.salaryMax?.value }}
+                  </p>
+                </ng-container>
+                <ng-template #elseTemplateSalary>
+                  <p>No indica salario</p>
+                </ng-template>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </ng-template>
+  </div>
+</div>
+

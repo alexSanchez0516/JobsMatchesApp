@@ -1,49 +1,47 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
+import { ItemLink } from './interfaces/generics.Interface';
+import { DarkModeService } from 'angular-dark-mode';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
-export class AppComponent implements OnInit {
+export class AppComponent  {
+
+
+  routes: ItemLink[] = [
+    {
+      text: 'Buscar Empleo',
+      url: '/buscar-empleo',
+    }
+  ];
+
   title = 'infoJobApp';
-  private base_url  = 'https://api.infojobs.net/api';
-  private headers = new HttpHeaders({
-      'Content-Type':'application/json; charset=utf-8',
-      'Authorization': 'Basic MDA0NDc5MDM5YTAzNDZjY2I3MDE0NWRmNWYyYTMwMmI6RFBLSWMzbENrV1NNb012QU9PT1pQSEhzRVpodFFTU0hBVG40V1ErdEpRTm15VUYyYzE=',
-      'User-Role': 'ROLE_CANDIDATE',
-      'Scope': 'CANDIDATE_PROFILE_WITH_EMAIL'
-    });
 
-  constructor(private http: HttpClient) {
 
-    // const headers = new HttpHeaders({
-    //   'Content-Type':'application/json; charset=utf-8',
-    //   'Authorization': 'Basic MDA0NDc5MDM5YTAzNDZjY2I3MDE0NWRmNWYyYTMwMmI6RFBLSWMzbENrV1NNb012QU9PT1pQSEhzRVpodFFTU0hBVG40V1ErdEpRTm15VUYyYzE=',
-    //   'User-Role': 'ROLE_CANDIDATE',
-    //   'Scope': 'CANDIDATE_PROFILE_WITH_EMAIL'
-    // });
+  changeThemeColor(){
+    console.log('click to change theme color');
+    const body = document.getElementsByTagName('body')[0];
+    const moon = document.querySelector('.fa-moon');
+    // const lettersSpan = document.querySelectorAll('span');
+    const lettersH = document.querySelectorAll('span');
+    const lettersSpan = document.querySelectorAll('span');
 
-    // let url = 'https://api.infojobs.net/api/6/candidate';
-    // this.http.get(url, { headers: headers}).subscribe({
-    //   next: (response) => {
-    //     console.log(response);
-    //   },
-    //   error: (err: any) => {
-    //     console.log(err);
-    //   }
-    // });
-  }
-  ngOnInit(): void {
-    this.http.get(`${this.base_url}/9/offer?q=Desarrollador/a`, {headers: this.headers})
-      .subscribe({
-        next: (response) => {
-          console.log(response);
-        },
-        error: (err) => {
-          console.log(err);
-        }
-      });
+
+    if (body.classList.contains('bg-dark')){
+      body.classList.remove('bg-dark');
+      moon!.classList.remove('text-light');
+      body.classList.remove('text-light');
+
+    } else {
+      body.classList.add('bg-dark');
+      body.classList.add('text-light');
+
+      moon!.classList.add('text-light');
+    }
+    return true
   }
 }
