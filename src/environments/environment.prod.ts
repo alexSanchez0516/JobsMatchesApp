@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  endpoint: 'https://api.divisione.es/'
+  endpoint: 'https://paidsanddays.ovh/api/app/'
 };
