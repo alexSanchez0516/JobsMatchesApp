@@ -45,22 +45,26 @@
 
   <div class="row mt-4 mb-2">
     <div class="col-md-3 col-6">
+      <label for="">Salario</label>
       <select (change)="filterBySalary($event)" class="form-select" aria-label="Default select example">
         <option [value]="salary.id" *ngFor="let salary of this.salaryInfoJobsKeyValueData.data">{{salary.value}}</option>
       </select>
     </div>
     <div class="col-md-3 col-6">
+      <label for="">Experiencia</label>
       <select (change)="filterByXP($event)" class="form-select" aria-label="Default select example">
         <option [value]="xp.id" *ngFor="let xp of this.experienceInfoJobsKeyValueData.data">{{xp.value}}</option>
       </select>
     </div>
     <div class="col-md-3 col-6">
+      <label for="">Modalidad</label>
       <select (change)="filterByModalidad($event)" class="form-select" aria-label="Default select example">
         <option [value]="modality.id" *ngFor="let modality of this.teleworkingInfoJobsKeyValueData.data">{{modality.value}}</option>
       </select>
     </div>
 
     <div class="col-md-3 col-6">
+      <label for="">Jornada</label>
       <select (change)="filterByTipoJornada($event)" class="form-select" aria-label="Default select example">
         <option [value]="typeJornada.id" *ngFor="let typeJornada of this.typeJornadaInfoJobsKeyValueData.data">{{typeJornada.value}}</option>
       </select>
